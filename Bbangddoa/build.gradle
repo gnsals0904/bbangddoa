@@ -10,12 +10,18 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	maven {
+		name 'm2-dv8tion'
+		url 'https://m2.dv8tion.net/releases'
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation("net.dv8tion:JDA:4.3.0_277") //discord
 }
 
 tasks.named('test') {
