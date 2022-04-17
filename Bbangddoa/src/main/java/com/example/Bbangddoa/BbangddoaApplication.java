@@ -2,6 +2,7 @@ package com.example.Bbangddoa;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -19,10 +20,11 @@ public class BbangddoaApplication extends ListenerAdapter {
 	public static void main(String[] args) throws LoginException {
 		SpringApplication.run(BbangddoaApplication.class, args);
 
-		JDA jda = JDABuilder.createDefault("token").build();
+		JDA jda = JDABuilder.createDefault("OTYyMjY2NDM3MTE4OTkyNDQ1.YlFCdA.14pfQyOuH3aqWcZi6Klzvo44akU").build();
 		//You can also add event listeners to the already built JDA instance
 		// Note that some events may not be received if the listener is added after calling build()
 		// This includes events such as the ReadyEvent
+		jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		jda.addEventListener(new BbangddoaApplication());
 
 	}
