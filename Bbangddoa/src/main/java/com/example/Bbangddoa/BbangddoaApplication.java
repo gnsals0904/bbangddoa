@@ -11,17 +11,21 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okio.ByteString;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @SpringBootApplication
 public class BbangddoaApplication extends ListenerAdapter {
 
 	public static void main(String[] args) throws LoginException {
 		SpringApplication.run(BbangddoaApplication.class, args);
-		String bot_token = "OTYyMjY2NDM3MTE4OTkyNDQ1.YlFCdA.14pfQyOuH3aqWcZi6Klzvo44akU";
+		String bot_token = System.getenv("bot_token");
 		JDA jda = JDABuilder.createDefault(bot_token).build();
 		// You can also add event listeners to the already built JDA instance
 		// Note that some events may not be received if the listener is added after calling build()
