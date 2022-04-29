@@ -1,5 +1,7 @@
 package com.example.Bbangddoa;
 
+import com.example.Bbangddoa.domain.Summoner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -17,6 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -25,6 +28,31 @@ public class BbangddoaApplication extends ListenerAdapter {
 
 	public static void main(String[] args) throws LoginException {
 		SpringApplication.run(BbangddoaApplication.class, args);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		Summoner summoner = null;	// DTO
+
+		// 공백 처리
+		String name;
+		String SummonerName = name.replaceAll(" ", "%20");
+		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ SummonerName + "?api_key=" + Key.API_KEY;
+
+		try {
+			HttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
+			HttpGet getRequest = new HttpGet(requestURL); //GET 메소드 URL 생성
+			HttpResponse response = client.execute(getRequest);
+
+			//Response 출력
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				summoner = objectMapper.readValue(body, Summoner.class);   // String to Object로 변환
+
+			}
+
+
+
+
 		String bot_token = System.getenv("bot_token");
 		JDA jda = JDABuilder.createDefault(bot_token).build();
 		// You can also add event listeners to the already built JDA instance
