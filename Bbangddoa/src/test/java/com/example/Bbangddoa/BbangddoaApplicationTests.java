@@ -8,6 +8,7 @@ class BbangddoaApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

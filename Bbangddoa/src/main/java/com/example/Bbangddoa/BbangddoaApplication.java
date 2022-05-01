@@ -30,12 +30,13 @@ public class BbangddoaApplication extends ListenerAdapter {
 		SpringApplication.run(BbangddoaApplication.class, args);
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		Summoner summoner = null;	// DTO
 
+		Summoner summoner = null;	// DTO
+		String riot_api_key = System.getenv("riot_api_key");
 		// 공백 처리
-		String name;
+		String name = "hide on bush";
 		String SummonerName = name.replaceAll(" ", "%20");
-		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ SummonerName + "?api_key=" + Key.API_KEY;
+		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ SummonerName + "?api_key=" + riot_api_key;
 
 		try {
 			HttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
