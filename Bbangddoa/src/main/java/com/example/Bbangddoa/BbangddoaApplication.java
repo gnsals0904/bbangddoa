@@ -16,9 +16,16 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okio.ByteString;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.security.auth.login.LoginException;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,18 +45,27 @@ public class BbangddoaApplication extends ListenerAdapter {
 		String SummonerName = name.replaceAll(" ", "%20");
 		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ SummonerName + "?api_key=" + riot_api_key;
 
+
 		try {
-			HttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
-			HttpGet getRequest = new HttpGet(requestURL); //GET 메소드 URL 생성
-			HttpResponse response = client.execute(getRequest);
-
-			//Response 출력
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				summoner = objectMapper.readValue(body, Summoner.class);   // String to Object로 변환
-
+			String USER_AGENT = "Mozilla/5.0";
+			URL url = new URL(requestURL);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET"); // optional default is GET
+			con.setRequestProperty("User-Agent", USER_AGENT); // add request header
+			int responseCode = con.getResponseCode();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
 			}
+			in.close(); // print result
+			System.out.println("HTTP 응답 코드 : " + responseCode);
+			System.out.println("HTTP body : " + response.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 
 
