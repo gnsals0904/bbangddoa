@@ -45,7 +45,8 @@ public class BbangddoaApplication extends ListenerAdapter {
 		String SummonerName = name.replaceAll(" ", "%20");
 		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ SummonerName + "?api_key=" + riot_api_key;
 
-
+		//rest api 로 수정 필요
+		//mvc 패턴 적용 필요
 		try {
 			String USER_AGENT = "Mozilla/5.0";
 			URL url = new URL(requestURL);
