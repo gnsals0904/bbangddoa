@@ -47,6 +47,7 @@ public class BbangddoaApplication extends ListenerAdapter {
 
 		//rest api 로 수정 필요
 		//mvc 패턴 적용 필요
+		
 		try {
 			String USER_AGENT = "Mozilla/5.0";
 			URL url = new URL(requestURL);
