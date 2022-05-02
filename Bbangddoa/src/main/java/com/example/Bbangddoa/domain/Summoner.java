@@ -1,7 +1,7 @@
 package com.example.Bbangddoa.domain;
 
 public class Summoner {
-    private String accountI;
+    private String accountId;
     private int profileIconId;
     private long revisionDate;
     private String name;
@@ -9,12 +9,12 @@ public class Summoner {
     private String puuid;
     private long summonerLevel;
 
-    public String getAccountI() {
-        return accountI;
+    public String getAccountId() {
+        return accountId;
     }
 
-    public void setAccountI(String accountI) {
-        this.accountI = accountI;
+    public void setAccountI(String accountId) {
+        this.accountId = accountId;
     }
 
     public int getProfileIconId() {

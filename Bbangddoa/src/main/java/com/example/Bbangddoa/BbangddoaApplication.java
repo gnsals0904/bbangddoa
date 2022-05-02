@@ -5,30 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.utils.Compression;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import okio.ByteString;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @SpringBootApplication
 public class BbangddoaApplication extends ListenerAdapter {
@@ -63,9 +52,11 @@ public class BbangddoaApplication extends ListenerAdapter {
 		}
 		else if(msg.getContentRaw().equals("!전적검색")) {
 			String name = "hide on bush";
+			Summoner summonerInfo = null;
 			String SummonerName = name.replaceAll(" ", "%20");
 			String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
-			searchSummonerInfo(riot_api_key,"vtz",requestURL);
+			summonerInfo = searchSummonerInfo(riot_api_key,"vtz",requestURL);
+			event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 입니다").queue();
 		}
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
@@ -81,8 +72,9 @@ public class BbangddoaApplication extends ListenerAdapter {
 
 	//rest api 로 수정 필요
 	//mvc 패턴 적용 필요
-	public void searchSummonerInfo(String key,String summonerName,String basicRequestURL){
+	public Summoner searchSummonerInfo(String key, String summonerName, String basicRequestURL){
 		String requestURL = basicRequestURL + summonerName + "?api_key=" + key;
+		Summoner summoner = null;
 		try {
 			String USER_AGENT = "Mozilla/5.0";
 			URL url = new URL(requestURL);
@@ -97,11 +89,17 @@ public class BbangddoaApplication extends ListenerAdapter {
 				response.append(inputLine);
 			}
 			in.close(); // print result
+//			Summoner summoner = null;
 			System.out.println("HTTP 응답 코드 : " + responseCode);
 			System.out.println("HTTP body : " + response.toString());
+			ObjectMapper objectMapper = new ObjectMapper();
+			summoner = objectMapper.readValue(response.toString(), Summoner.class);
+			System.out.println("Summoner Level :"+summoner.getSummonerLevel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return summoner;
 	}
+
 
 }
