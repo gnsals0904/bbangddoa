@@ -26,11 +26,6 @@ public class BbangddoaApplication extends ListenerAdapter {
 	public static void main(String[] args) throws LoginException {
 		SpringApplication.run(BbangddoaApplication.class, args);
 
-		// ObjectMapper objectMapper = new ObjectMapper();
-
-		Summoner summoner = null;	// DTO
-
-
 		JDA jda = JDABuilder.createDefault(bot_token).build();
 		// You can also add event listeners to the already built JDA instance
 		// Note that some events may not be received if the listener is added after calling build()
