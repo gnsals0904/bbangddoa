@@ -1,5 +1,6 @@
 package com.example.Bbangddoa;
 
+import com.example.Bbangddoa.domain.LeagueEntry;
 import com.example.Bbangddoa.domain.Summoner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
@@ -18,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 @SpringBootApplication
 public class BbangddoaApplication extends ListenerAdapter {
@@ -48,10 +50,13 @@ public class BbangddoaApplication extends ListenerAdapter {
 		else if(msg.getContentRaw().equals("!전적검색")) {
 			String name = "hide on bush";
 			Summoner summonerInfo = null;
+			List<LeagueEntry> summonerLeagueInfo = null;
 			String SummonerName = name.replaceAll(" ", "%20");
 			String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
-			summonerInfo = searchSummonerInfo(riot_api_key,"vtz",requestURL);
+			summonerInfo = searchSummonerInfo(riot_api_key, requestURL,"vtz");
 			event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 입니다").queue();
+			requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
+			summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
 		}
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
@@ -67,7 +72,7 @@ public class BbangddoaApplication extends ListenerAdapter {
 
 	//rest api 로 수정 필요
 	//mvc 패턴 적용 필요
-	public Summoner searchSummonerInfo(String key, String summonerName, String basicRequestURL){
+	public Summoner searchSummonerInfo(String key, String basicRequestURL, String summonerName){
 		String requestURL = basicRequestURL + summonerName + "?api_key=" + key;
 		Summoner summoner = null;
 		try {
@@ -84,8 +89,7 @@ public class BbangddoaApplication extends ListenerAdapter {
 				response.append(inputLine);
 			}
 			in.close(); // print result
-//			Summoner summoner = null;
-			System.out.println("HTTP 응답 코드 : " + responseCode);
+			System.out.println("searchSummonerInfo HTTP 응답 코드 : " + responseCode);
 			System.out.println("HTTP body : " + response.toString());
 			ObjectMapper objectMapper = new ObjectMapper();
 			summoner = objectMapper.readValue(response.toString(), Summoner.class);
@@ -96,5 +100,32 @@ public class BbangddoaApplication extends ListenerAdapter {
 		return summoner;
 	}
 
+	public List<LeagueEntry> searchSummonerLeagueInfo(String key, String basicRequestURL, String summonerEncryptedId){
+		String requestURL = basicRequestURL + summonerEncryptedId + "?api_key=" + key;
+		List<LeagueEntry> leagueEntry = null;
+		try {
+			String USER_AGENT = "Mozilla/5.0";
+			URL url = new URL(requestURL);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET"); // optional default is GET
+			con.setRequestProperty("User-Agent", USER_AGENT); // add request header
+			int responseCode = con.getResponseCode();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close(); // print result
+			System.out.println("LeagueInfo HTTP 응답 코드 : " + responseCode);
+			System.out.println("HTTP body : " + response.toString());
+			ObjectMapper objectMapper = new ObjectMapper();
+			leagueEntry = (List<LeagueEntry>) objectMapper.readValue(response.toString(), LeagueEntry.class);
+			System.out.println("Summoner Tier :"+ leagueEntry.get(1).getTier());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return leagueEntry;
+	}
 
 }
