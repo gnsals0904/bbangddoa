@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -28,11 +29,14 @@ public class BbangddoaApplication extends ListenerAdapter {
 	static String bot_token = System.getenv("bot_token");
 	public static void main(String[] args) throws LoginException {
 		SpringApplication.run(BbangddoaApplication.class, args);
+		JDABuilder builder = JDABuilder.createDefault(bot_token);
+		builder.setActivity(Activity.of(Activity.ActivityType.DEFAULT,"빵또아는 빵안에 아이스크림이 들어가 있다고 주장하는 중"));
+		// JDA jda = JDABuilder.createDefault(bot_token).build();
 
-		JDA jda = JDABuilder.createDefault(bot_token).build();
 		// You can also add event listeners to the already built JDA instance
 		// Note that some events may not be received if the listener is added after calling build()
 		// This includes events such as the ReadyEvent
+		JDA jda = builder.build();
 		jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		jda.addEventListener(new BbangddoaApplication());
 
@@ -55,9 +59,10 @@ public class BbangddoaApplication extends ListenerAdapter {
 			String SummonerName = name.replaceAll(" ", "%20");
 			String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
 			summonerInfo = searchSummonerInfo(riot_api_key, requestURL,"vtz");
-			event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 입니다").queue();
 			requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
 			summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
+			event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(0).getTier()+" 입니다.").queue();
+
 		}
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
@@ -123,8 +128,7 @@ public class BbangddoaApplication extends ListenerAdapter {
 			ObjectMapper objectMapper = new ObjectMapper();
 			leagueEntry = objectMapper.readValue(response.toString(), new TypeReference<List<LeagueEntry>>() {});
 			System.out.println("queueType :" + leagueEntry.get(0).getQueueType());
-			System.out.println("Summoner Tier :"+ leagueEntry.get(0).getTier()+leagueEntry.get(1).getTier());
-
+			System.out.println("Summoner Tier :"+ leagueEntry.get(0).getTier());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
