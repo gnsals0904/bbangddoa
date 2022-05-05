@@ -2,6 +2,7 @@ package com.example.Bbangddoa;
 
 import com.example.Bbangddoa.domain.LeagueEntry;
 import com.example.Bbangddoa.domain.Summoner;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -120,8 +121,10 @@ public class BbangddoaApplication extends ListenerAdapter {
 			System.out.println("LeagueInfo HTTP 응답 코드 : " + responseCode);
 			System.out.println("HTTP body : " + response.toString());
 			ObjectMapper objectMapper = new ObjectMapper();
-			leagueEntry = (List<LeagueEntry>) objectMapper.readValue(response.toString(), LeagueEntry.class);
-			System.out.println("Summoner Tier :"+ leagueEntry.get(1).getTier());
+			leagueEntry = objectMapper.readValue(response.toString(), new TypeReference<List<LeagueEntry>>() {});
+			System.out.println("queueType :" + leagueEntry.get(0).getQueueType());
+			System.out.println("Summoner Tier :"+ leagueEntry.get(0).getTier()+leagueEntry.get(1).getTier());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
