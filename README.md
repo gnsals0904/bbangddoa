@@ -1,3 +1,3 @@
 # bbangddoa
-Bbangttoa is a discode bot with various convenience functions
+Bbangddoa is a discord bot with various convenience functions
 ### (Use JDA)
