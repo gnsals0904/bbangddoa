@@ -12,11 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import static com.example.Bbangddoa.BbangddoaApplication.riot_api_key;
 
 @SpringBootTest
 class BbangddoaApplicationTests {
-
+	String riot_api_key = System.getenv("riot_api_key");
 	public void searchSummonerLeagueInfo(String key, String basicRequestURL, String summonerEncryptedId){
 		String requestURL = basicRequestURL + summonerEncryptedId + "?api_key=" + key;
 		List<LeagueEntry> leagueEntry = null;
