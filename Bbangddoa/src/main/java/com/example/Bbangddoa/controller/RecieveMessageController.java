@@ -15,10 +15,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class RecieveMessageController extends ListenerAdapter {
     static String riot_api_key = System.getenv("riot_api_key");
-
+    int Rank_solo_key = 0; // riot api send TFT Rank info & Solo Rank info Randomly
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
@@ -38,7 +39,7 @@ public class RecieveMessageController extends ListenerAdapter {
             summonerInfo = searchSummonerInfo(riot_api_key, requestURL,"vtz");
             requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
             summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
-            event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(0).getTier()+" 입니다.").queue();
+            event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
 
         }
         if (event.isFromType(ChannelType.PRIVATE)) {
@@ -65,7 +66,7 @@ public class RecieveMessageController extends ListenerAdapter {
             int responseCode = con.getResponseCode();
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -93,7 +94,7 @@ public class RecieveMessageController extends ListenerAdapter {
             int responseCode = con.getResponseCode();
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -104,6 +105,11 @@ public class RecieveMessageController extends ListenerAdapter {
             leagueEntry = objectMapper.readValue(response.toString(), new TypeReference<List<LeagueEntry>>() {});
             System.out.println("queueType :" + leagueEntry.get(0).getQueueType());
             System.out.println("Summoner Tier :"+ leagueEntry.get(0).getTier());
+            if(Objects.equals(leagueEntry.get(0).getQueueType(), "RANKED_TFT_PAIRS")){
+                Rank_solo_key = 1;
+            } else{
+                Rank_solo_key = 0;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
