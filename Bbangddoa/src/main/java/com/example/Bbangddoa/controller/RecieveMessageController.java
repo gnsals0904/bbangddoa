@@ -4,10 +4,12 @@ import com.example.Bbangddoa.domain.LeagueEntry;
 import com.example.Bbangddoa.domain.Summoner;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -24,6 +26,7 @@ public class RecieveMessageController extends ListenerAdapter {
         User user = event.getAuthor();
         TextChannel channel = event.getTextChannel();
         Message msg = event.getMessage();
+        EmbedBuilder embedBuilder = new EmbedBuilder();
         if(user.isBot()) return;
         if(msg.getContentRaw().charAt(0) == '!'){
             String[] msg_array = msg.getContentRaw().substring(1).split(" ");
@@ -52,7 +55,42 @@ public class RecieveMessageController extends ListenerAdapter {
                 summonerInfo = searchSummonerInfo(riot_api_key, requestURL,summonerName);
                 requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
                 summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
-                event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
+                embedBuilder.setTitle("전적 검색");
+                embedBuilder.setColor(new Color(0x44c0e9));
+                embedBuilder.setDescription(summonerName+"님의 League of Legend 계정 정보입니다!");
+                embedBuilder.addField("레벨",""+summonerInfo.getSummonerLevel(),true);
+                embedBuilder.addField("티어",summonerLeagueInfo.get(Rank_solo_key).getTier(),true);
+                //event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
+                switch (summonerLeagueInfo.get(Rank_solo_key).getTier()) {
+                    case "BRONZE":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/UoVCn/btqX82Nv6uf/6Wk63xJmnTVtW968iSurc0/img.png");
+                        break;
+                    case "SILVER":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/dxjmpT/btqYgGWXdq5/YyaujId4AjzIRu7SEUoP71/img.png");
+                        break;
+                    case "GOLD":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bUXEUo/btqX812cCZG/TwooRuWWtDuxo2xfvB2KW1/img.png");
+                        break;
+                    case "PLATINUM":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/wasjB/btqYfVUjFmK/KD9Vw3T7WZ7qpv7sELuLU0/img.png");
+                        break;
+                    case "DIAMOND":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/c90MX3/btqX319ryJc/8R0TA5BsNtxMWiQINcggr0/img.png");
+                        break;
+                    case "MASTER":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bwCoOa/btqX32N6lBg/euKVfTIZgi2oVmUHRx0XAK/img.png");
+                        break;
+                    case "IRON":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/8yeAR/btqX83lmfND/Q0vCmYQx09DLQX1dbGvw61/img.png");
+                        break;
+                    case "CHALLENGER":
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/daNR6z/btqYbJNFasE/rbH16SlWukVsCcjgefsWC1/img.png");
+                        break;
+                    default:
+                        embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bsJT7b/btqYhyYDWap/HUTD09WchC9qZW8r1p1QB0/img.png");
+                        break;
+                }
+                event.getChannel().sendMessage(embedBuilder.build()).queue();
             }
             if(msg_array[0].equalsIgnoreCase("clear")) {
                 msg.delete().queue();
