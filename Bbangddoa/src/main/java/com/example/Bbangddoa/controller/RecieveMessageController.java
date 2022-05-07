@@ -4,9 +4,7 @@ import com.example.Bbangddoa.domain.LeagueEntry;
 import com.example.Bbangddoa.domain.Summoner;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -23,25 +21,63 @@ public class RecieveMessageController extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
+        User user = event.getAuthor();
+        TextChannel channel = event.getTextChannel();
         Message msg = event.getMessage();
-        if (msg.getContentRaw().equals("!ping")) {
-            MessageChannel channel = event.getChannel();
-            long time = System.currentTimeMillis();
-            System.out.println("event :" + msg.getContentRaw());
-            event.getChannel().sendMessage("pong!").queue();
-        }
-        else if(msg.getContentRaw().equals("!전적검색")) {
-            String name = "hide on bush";
-            Summoner summonerInfo = null;
-            List<LeagueEntry> summonerLeagueInfo = null;
-            String SummonerName = name.replaceAll(" ", "%20");
-            String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
-            summonerInfo = searchSummonerInfo(riot_api_key, requestURL,"vtz");
-            requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
-            summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
-            event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
+        if(user.isBot()) return;
+        if(msg.getContentRaw().charAt(0) == '!'){
+            String[] msg_array = msg.getContentRaw().substring(1).split(" ");
+            if(msg_array.length <= 0) return;
+            if (msg_array[0].equalsIgnoreCase("ping")) {
+                long time = System.currentTimeMillis();
+                System.out.println("event :" + msg.getContentRaw());
+                event.getChannel().sendMessage("pong!").queue();
+            }
+            if(msg_array[0].equalsIgnoreCase("전적검색")) {
+                if (msg_array.length == 1){
+                    channel.sendMessage("전적검색이라고 입력한 후 띄어쓴다음 닉네임을 입력해주세요!").queue();
+                    return;
+                }
+                else if (msg_array.length != 2) {
+                    channel.sendMessage("띄어쓰기 없이 입력해야해요!").queue();
+                    return;
+                }
+                // String name = "hide on bush";
+                // String SummonerName = name.replaceAll(" ", "%20");
+                String summonerName = msg_array[1];
+                System.out.println("summonerName : "+ summonerName);
+                Summoner summonerInfo = null;
+                List<LeagueEntry> summonerLeagueInfo = null;
+                String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
+                summonerInfo = searchSummonerInfo(riot_api_key, requestURL,summonerName);
+                requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
+                summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
+                event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
+            }
+            if(msg_array[0].equalsIgnoreCase("clear")) {
+                msg.delete().queue();
+                if (msg_array.length != 2) return;
+                int count = 1;
+                try {
+                    count = Integer.parseInt(msg_array[1]);
+                } catch(Exception e){
+                    channel.sendMessage("정수를 입력해야합니다!").queue();
+                    return;
+                }
+                if(count < 1 | count > 100){
+                    channel.sendMessage("1에서 100사이의 정수를 입력해야합니다!").queue();
+                    return;
+                }
+                MessageHistory mh = new MessageHistory(channel);
+                List<Message> msgs = mh.retrievePast(count).complete();
+                channel.deleteMessages(msgs).complete();
+                channel.sendMessage(count + " 개의 메시지를 제거했어요!").queue();
 
+
+            }
         }
+
+
         if (event.isFromType(ChannelType.PRIVATE)) {
             System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
                     event.getMessage().getContentDisplay());
