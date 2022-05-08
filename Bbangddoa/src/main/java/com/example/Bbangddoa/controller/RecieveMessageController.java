@@ -45,8 +45,6 @@ public class RecieveMessageController extends ListenerAdapter {
                     channel.sendMessage("띄어쓰기 없이 입력해야해요!").queue();
                     return;
                 }
-                // String name = "hide on bush";
-                // String SummonerName = name.replaceAll(" ", "%20");
                 String summonerName = msg_array[1];
                 System.out.println("summonerName : "+ summonerName);
                 Summoner summonerInfo = null;
@@ -59,8 +57,9 @@ public class RecieveMessageController extends ListenerAdapter {
                 embedBuilder.setColor(new Color(0x44c0e9));
                 embedBuilder.setDescription(summonerName+"님의 League of Legend 계정 정보입니다!");
                 embedBuilder.addField("레벨",""+summonerInfo.getSummonerLevel(),true);
-                embedBuilder.addField("티어",summonerLeagueInfo.get(Rank_solo_key).getTier(),true);
-                //event.getChannel().sendMessage("검색한 소환사의 레벨은 "+summonerInfo.getSummonerLevel()+" 이고 랭크 티어는 "+summonerLeagueInfo.get(Rank_solo_key).getTier()+" 입니다.").queue();
+                embedBuilder.addField("티어",summonerLeagueInfo.get(Rank_solo_key).getTier()+summonerLeagueInfo.get(Rank_solo_key).getRank(),true);
+                embedBuilder.addField("LP",""+summonerLeagueInfo.get(Rank_solo_key).getLeaguePoints(),true);
+                embedBuilder.addField("승/패",""+summonerLeagueInfo.get(Rank_solo_key).getWins()+summonerLeagueInfo.get(Rank_solo_key).getLosses(),true);
                 switch (summonerLeagueInfo.get(Rank_solo_key).getTier()) {
                     case "BRONZE":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/UoVCn/btqX82Nv6uf/6Wk63xJmnTVtW968iSurc0/img.png");
