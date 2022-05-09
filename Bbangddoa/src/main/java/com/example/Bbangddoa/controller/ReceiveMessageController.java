@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
-public class RecieveMessageController extends ListenerAdapter {
+public class ReceiveMessageController extends ListenerAdapter {
     static String riot_api_key = System.getenv("riot_api_key");
     int Rank_solo_key = 0; // riot api send TFT Rank info & Solo Rank info Randomly
     @Override
@@ -57,9 +57,13 @@ public class RecieveMessageController extends ListenerAdapter {
                 embedBuilder.setColor(new Color(0x44c0e9));
                 embedBuilder.setDescription(summonerName+"님의 League of Legend 계정 정보입니다!");
                 embedBuilder.addField("레벨",""+summonerInfo.getSummonerLevel(),true);
-                embedBuilder.addField("티어",summonerLeagueInfo.get(Rank_solo_key).getTier()+summonerLeagueInfo.get(Rank_solo_key).getRank(),true);
+                embedBuilder.addField("티어",summonerLeagueInfo.get(Rank_solo_key).getTier()+"  "+summonerLeagueInfo.get(Rank_solo_key).getRank(),true);
                 embedBuilder.addField("LP",""+summonerLeagueInfo.get(Rank_solo_key).getLeaguePoints(),true);
-                embedBuilder.addField("승/패",""+summonerLeagueInfo.get(Rank_solo_key).getWins()+summonerLeagueInfo.get(Rank_solo_key).getLosses(),true);
+                embedBuilder.addField("승/패",""+summonerLeagueInfo.get(Rank_solo_key).getWins()+"/"+summonerLeagueInfo.get(Rank_solo_key).getLosses(),true);
+                double winRate = (double) summonerLeagueInfo.get(Rank_solo_key).getWins() / (summonerLeagueInfo.get(Rank_solo_key).getWins() + summonerLeagueInfo.get(Rank_solo_key).getLosses()) * 100.0;
+                winRate = Math.round(winRate * 10)/10.0;
+                embedBuilder.addField("승률",""+winRate+"%",true);
+
                 switch (summonerLeagueInfo.get(Rank_solo_key).getTier()) {
                     case "BRONZE":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/UoVCn/btqX82Nv6uf/6Wk63xJmnTVtW968iSurc0/img.png");

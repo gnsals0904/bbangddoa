@@ -1,31 +1,15 @@
 package com.example.Bbangddoa;
 
-import com.example.Bbangddoa.controller.RecieveMessageController;
-import com.example.Bbangddoa.domain.LeagueEntry;
-import com.example.Bbangddoa.domain.Summoner;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.Bbangddoa.controller.ReceiveMessageController;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.security.auth.login.LoginException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
 @SpringBootApplication
 public class BbangddoaApplication extends ListenerAdapter {
@@ -43,7 +27,7 @@ public class BbangddoaApplication extends ListenerAdapter {
 
 
 		jda.getPresence().setStatus(OnlineStatus.ONLINE);
-		jda.addEventListener(new RecieveMessageController());
+		jda.addEventListener(new ReceiveMessageController());
 
 
 	}
