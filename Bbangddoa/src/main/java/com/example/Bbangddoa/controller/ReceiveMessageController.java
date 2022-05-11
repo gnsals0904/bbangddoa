@@ -83,15 +83,15 @@ public class ReceiveMessageController extends ListenerAdapter {
                         break;
                     case "PLATINUM":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/wasjB/btqYfVUjFmK/KD9Vw3T7WZ7qpv7sELuLU0/img.png");
-                        championScore = championScore + 150;
+                        championScore = championScore + 300;
                         break;
                     case "DIAMOND":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/c90MX3/btqX319ryJc/8R0TA5BsNtxMWiQINcggr0/img.png");
-                        championScore = championScore + 200;
+                        championScore = championScore + 600;
                         break;
                     case "MASTER":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bwCoOa/btqX32N6lBg/euKVfTIZgi2oVmUHRx0XAK/img.png");
-                        championScore = championScore + 500;
+                        championScore = championScore + 900;
                         break;
                     case "IRON":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/8yeAR/btqX83lmfND/Q0vCmYQx09DLQX1dbGvw61/img.png");
@@ -99,16 +99,37 @@ public class ReceiveMessageController extends ListenerAdapter {
                         break;
                     case "CHALLENGER":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/daNR6z/btqYbJNFasE/rbH16SlWukVsCcjgefsWC1/img.png");
-                        championScore = championScore + 1000;
+                        championScore = championScore + 2000;
                         break;
                     default:
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bsJT7b/btqYhyYDWap/HUTD09WchC9qZW8r1p1QB0/img.png");
                         break;
                 }
-                if(championScore < 50){
+                if(championScore < 100){
                     embedBuilder.addField("뉴비판독기",""+championScore+"점으로 삐약삐약 병아리시네요!",false);
-                } else if(championScore < 100){
+                } else if(championScore < 200){
                     embedBuilder.addField("뉴비판독기",""+championScore+"점으로 병아리는 아니지만.. 아직 뉴비입니다!",false);
+                }
+                else if(championScore < 500){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 친구들하고 같이 할 정도는 되겠네요!",false);
+                }
+                else if(championScore < 800){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 친구들하고 하실때 캐리도 가끔 할 수 있겠어요!",false);
+                }
+                else if(championScore < 1000){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 어디가서 롤 좀 해봤다고 하실 수 있겠네요!",false);
+                }
+                else if(championScore < 1200){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점.. 챔피언에 대한 숙련도가 높던지, 티어가 높던지 어느쪽이시든 잘하시네요!",false);
+                }
+                else if(championScore < 1400){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 숙련도면 숙련도, 티어면 티어 모자란 부분이 없으세요...대단하십니다!",false);
+                }
+                else if(championScore < 1600){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 거의 프로게이머 수준이에요, 솔랭돌리시면 프로와 매칭될 수 있겠어요!",false);
+                }
+                else {
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 롤이 이제 숨쉬는 것만큼 쉬운 경지에요. 혹시 프로게이머?",false);
                 }
 
 
