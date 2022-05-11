@@ -1,5 +1,6 @@
 package com.example.Bbangddoa.controller;
 
+import com.example.Bbangddoa.domain.ChampionMasteryScore;
 import com.example.Bbangddoa.domain.LeagueEntry;
 import com.example.Bbangddoa.domain.Summoner;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -53,6 +54,10 @@ public class ReceiveMessageController extends ListenerAdapter {
                 summonerInfo = searchSummonerInfo(riot_api_key, requestURL,summonerName);
                 requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/";
                 summonerLeagueInfo = searchSummonerLeagueInfo(riot_api_key, requestURL, summonerInfo.getId());
+                requestURL = "https://kr.api.riotgames.com/lol/champion-mastery/v4/scores/by-summoner/";
+                int championScore = 0;
+                championScore = Integer.parseInt(searchSummonerScore(riot_api_key, requestURL, summonerInfo.getId()));
+                System.out.println("championScore :"+championScore );
                 embedBuilder.setTitle("전적 검색");
                 embedBuilder.setColor(new Color(0x44c0e9));
                 embedBuilder.setDescription(summonerName+"님의 League of Legend 계정 정보입니다!");
@@ -63,36 +68,50 @@ public class ReceiveMessageController extends ListenerAdapter {
                 double winRate = (double) summonerLeagueInfo.get(Rank_solo_key).getWins() / (summonerLeagueInfo.get(Rank_solo_key).getWins() + summonerLeagueInfo.get(Rank_solo_key).getLosses()) * 100.0;
                 winRate = Math.round(winRate * 10)/10.0;
                 embedBuilder.addField("승률",""+winRate+"%",true);
-
                 switch (summonerLeagueInfo.get(Rank_solo_key).getTier()) {
                     case "BRONZE":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/UoVCn/btqX82Nv6uf/6Wk63xJmnTVtW968iSurc0/img.png");
+                        championScore = championScore + 30;
                         break;
                     case "SILVER":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/dxjmpT/btqYgGWXdq5/YyaujId4AjzIRu7SEUoP71/img.png");
+                        championScore = championScore + 50;
                         break;
                     case "GOLD":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bUXEUo/btqX812cCZG/TwooRuWWtDuxo2xfvB2KW1/img.png");
+                        championScore = championScore + 80;
                         break;
                     case "PLATINUM":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/wasjB/btqYfVUjFmK/KD9Vw3T7WZ7qpv7sELuLU0/img.png");
+                        championScore = championScore + 150;
                         break;
                     case "DIAMOND":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/c90MX3/btqX319ryJc/8R0TA5BsNtxMWiQINcggr0/img.png");
+                        championScore = championScore + 200;
                         break;
                     case "MASTER":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bwCoOa/btqX32N6lBg/euKVfTIZgi2oVmUHRx0XAK/img.png");
+                        championScore = championScore + 500;
                         break;
                     case "IRON":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/8yeAR/btqX83lmfND/Q0vCmYQx09DLQX1dbGvw61/img.png");
+                        championScore = championScore + 10;
                         break;
                     case "CHALLENGER":
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/daNR6z/btqYbJNFasE/rbH16SlWukVsCcjgefsWC1/img.png");
+                        championScore = championScore + 1000;
                         break;
                     default:
                         embedBuilder.setThumbnail("https://blog.kakaocdn.net/dn/bsJT7b/btqYhyYDWap/HUTD09WchC9qZW8r1p1QB0/img.png");
                         break;
                 }
+                if(championScore < 50){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 삐약삐약 병아리시네요!",false);
+                } else if(championScore < 100){
+                    embedBuilder.addField("뉴비판독기",""+championScore+"점으로 병아리는 아니지만.. 아직 뉴비입니다!",false);
+                }
+
+
                 event.getChannel().sendMessage(embedBuilder.build()).queue();
             }
             if(msg_array[0].equalsIgnoreCase("clear")) {
@@ -130,6 +149,29 @@ public class ReceiveMessageController extends ListenerAdapter {
         }
     }
 
+    public String searchSummonerScore(String key, String basicRequestURL, String summonerEncryptedId){
+        String requestURL = basicRequestURL + summonerEncryptedId + "?api_key=" + key;
+        StringBuilder response = new StringBuilder();
+        try {
+            String USER_AGENT = "Mozilla/5.0";
+            URL url = new URL(requestURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET"); // optional default is GET
+            con.setRequestProperty("User-Agent", USER_AGENT); // add request header
+            int responseCode = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close(); // print result
+            System.out.println("searchSummonerScore HTTP 응답 코드 : " + responseCode);
+            System.out.println("HTTP body : " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response.toString();
+    }
 
     public Summoner searchSummonerInfo(String key, String basicRequestURL, String summonerName){
         String requestURL = basicRequestURL + summonerName + "?api_key=" + key;
