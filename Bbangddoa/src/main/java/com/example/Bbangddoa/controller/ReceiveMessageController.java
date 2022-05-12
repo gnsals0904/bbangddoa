@@ -153,8 +153,16 @@ public class ReceiveMessageController extends ListenerAdapter {
                 List<Message> msgs = mh.retrievePast(count).complete();
                 channel.deleteMessages(msgs).complete();
                 channel.sendMessage(count + " 개의 메시지를 제거했어요!").queue();
-
-
+            }
+            if(msg_array[0].equalsIgnoreCase("help")){
+                embedBuilder.setTitle("빵또아 사용 설명서");
+                embedBuilder.setColor(new Color(0xdb4bd4));
+                embedBuilder.addField("0. !help","빵또아가 사용설명서를 보여줍니다.",false);
+                embedBuilder.addField("1. !clear 삭제하고싶은 메시지 수","빵또아가 입력한 메시지 수만큼 채널에 있는 메시지를 삭제합니다.",false);
+                embedBuilder.addField("2. !ping","빵또아와 핑퐁게임을 합니다.",false);
+                embedBuilder.addField("3. !전적검색 닉네임","빵또아가 입력한 닉네임에 해당하는 전적을 검색해서 알려줍니다.",false);
+                embedBuilder.setThumbnail("https://cdn-icons-png.flaticon.com/512/4403/4403455.png");
+                event.getChannel().sendMessage(embedBuilder.build()).queue();
             }
         }
 
