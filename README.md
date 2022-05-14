@@ -7,6 +7,10 @@ Bbangddoa is a discord bot with various convenience functions
 # How does it works?
 To be added
 
+# Functions
+To be added
+
+
 # Tech Stack
 
 <div align="left">
