@@ -5,7 +5,9 @@ Bbangddoa is a discord bot with various convenience functions
 </div>
 
 # How does it works?
-To be added
+<div>
+<img src="./img.001.jpeg">
+</div>
 
 # Functions
 To be added
