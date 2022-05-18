@@ -1,17 +1,47 @@
 # bbangddoa discord bot
 Bbangddoa is a discord bot with various convenience functions
-<div>
-<img src="https://blog.kakaocdn.net/dn/mulG4/btrq7HaC2Cg/v7W3CKtagkDpTigtkXiZ6K/img.jpg" height="150" width="150"/>
-</div>
 
 # How does it works?
 <div>
-<img src="./img.001.jpeg">
+<img src="./img/img.001.jpeg" width="50%" height="50%">
 </div>
 
 # Functions
-To be added
+## 1. help command
+<div>
+<img src="./img/helpcommand.gif" width="50%" height="50%"/>
+</div>
 
+### bot will show you the user's manual for using Bbangddoa
+
+<br>
+
+## 2. clear command
+<div>
+<img src="./img/clearcommand.gif" width="50%" height="50%"/>
+</div>
+
+### bot will erases the discode message as many times as you enter it
+
+<br>
+
+## 3. ping command
+<div>
+<img src="./img/pingcommand.gif" width="50%" height="50%"/>
+</div>
+
+### bot will play ping pong game with you
+
+<br>
+
+## 4. search lol record command
+<div>
+<img src="./img/searchcommand.gif" width="50%" height="50%"/>
+</div>
+
+### bot will shows the record of the league of legends of the nickname you entered
+
+<br>
 
 # Tech Stack
 
