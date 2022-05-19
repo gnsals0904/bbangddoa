@@ -3,7 +3,7 @@ Bbangddoa is a discord bot with various convenience functions
 
 # How does it works?
 <div>
-<img src="./img/img.001.jpeg" width="60%" height="60%">
+<img src="./img/img.001.jpeg" width="70%" height="70%">
 </div>
 
 # Functions
