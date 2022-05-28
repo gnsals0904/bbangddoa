@@ -1,5 +1,5 @@
 # bbangddoa discord bot
-Bbangddoa is a discord bot with various convenience functions
+Bbangddoa is a discord bot with various convenience functions!
 
 # How does it works?
 <div>
